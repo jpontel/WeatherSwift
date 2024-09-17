@@ -1,39 +1,31 @@
 import SwiftUI
 
-struct WeatherView: View {
-    var city: String
-    var temperature: String
-    var description: String
+struct ContentView: View {
+    @StateObject private var viewModel = WeatherViewModel()
+    @State private var startPoint = UnitPoint(x: 0.98, y: 0)
+    @State private var endPoint = UnitPoint(x: 1.2, y: 1.5)
 
     var body: some View {
+        HStack {
+            
+        }
         VStack {
-            Text(city)
+            Text(viewModel.city)
                 .font(.largeTitle)
                 .bold()
                 .padding()
+                .foregroundColor(.white)
 
-            Text(temperature)
+            Text(viewModel.temperature)
                 .font(.system(size: 60))
                 .bold()
                 .padding()
+                .foregroundColor(.white)
 
-            Text(description)
+            Text(viewModel.description)
                 .font(.title)
                 .padding()
-        }
-    }
-}
-
-struct ContentView: View {
-    @StateObject private var viewModel = WeatherViewModel()
-
-    var body: some View {
-        VStack {
-            WeatherView(
-                city: viewModel.city,
-                temperature: viewModel.temperature,
-                description: viewModel.description
-            )
+                .foregroundColor(.white)
 
             TextField("Enter City", text: $viewModel.city)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -62,11 +54,17 @@ struct ContentView: View {
                     Gradient.Stop(color: Color(red: 0.11, green: 0.43, blue: 0.76), location: 0.67),
                     Gradient.Stop(color: Color(red: 0.59, green: 0.79, blue: 1), location: 1.00),
                 ],
-                startPoint: UnitPoint(x: 0.98, y: 0),
-                endPoint: UnitPoint(x: 0.02, y: 0.99)
+                startPoint: startPoint,
+                endPoint: endPoint
             )
             .ignoresSafeArea()
         )
+        .onAppear {
+            withAnimation(Animation.linear(duration: 7.0).repeatForever(autoreverses: true)) {
+                startPoint = UnitPoint(x: 1, y: 0)
+                endPoint = UnitPoint(x: 0, y: 1)
+            }
+        }
     }
 }
 
