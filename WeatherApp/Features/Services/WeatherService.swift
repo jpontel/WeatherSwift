@@ -3,7 +3,7 @@ import Foundation
 class WeatherService {
     private let apiKey = "CA3YCCwcnNaLQftAs5H4VIyUCyMUPagm"
     
-    // MARK: - LocationKey
+    // MARK: - LocationKey (Search value)
     func fetchLocationKey(for city: String, completion: @escaping (String?) -> Void) {
         let urlString = "https://dataservice.accuweather.com/locations/v1/cities/search?q=\(city)&apikey=\(apiKey)"
         
@@ -21,7 +21,6 @@ class WeatherService {
                 return
             }
             
-            // Convertendo os dados em uma String para inspecionar o JSON bruto
             if let jsonString = String(data: data, encoding: .utf8) {
                 print("Resposta JSON: \(jsonString)")
             }
@@ -32,6 +31,32 @@ class WeatherService {
                 
                 if let location = json?.first,
                    let locationKey = location["Key"] as? String {
+                    completion(locationKey)
+                } else {
+                    completion(nil)
+                }
+            } catch {
+                print("Erro ao decodificar JSON: \(error)")
+                completion(nil)
+            }
+        }.resume()
+    }
+    
+    // MARK: - Location Key by Coordinates
+    func fetchLocationKeyCoordinates(forLatitude latitude: Double, longitude: Double, completion: @escaping (String?) -> Void ) {
+        let urlString = "http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=\(apiKey)&q=\(latitude),\(longitude)"
+        
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        URLSession.shared.dataTask(with: url) {data, response, error in guard let data = data, error == nil else {
+            completion(nil)
+            return
+        }
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                if let locationKey = json?["Key"] as? String {
                     completion(locationKey)
                 } else {
                     completion(nil)
