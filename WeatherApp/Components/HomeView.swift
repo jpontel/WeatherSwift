@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
     @StateObject private var viewModel = WeatherViewModel()
     @State private var startPoint = UnitPoint(x: 0.98, y: 0)
     @State private var endPoint = UnitPoint(x: 1.2, y: 1.5)
@@ -33,14 +33,12 @@ struct ContentView: View {
                     }
                 
                 Spacer()
-                
                 Text(viewModel.city)
                     .font(.title)
                     .padding()
                     .foregroundColor(.white)
                 
                 Spacer()
-                
                 Image(systemName: "magnifyingglass.circle")
                     .foregroundColor(.white)
                     .font(.system(size: 30))
@@ -63,31 +61,29 @@ struct ContentView: View {
                     .font(.system(size: 100))
                     .bold()
                     .padding()
-                    .overlay(
-                        LinearGradient(
-                            gradient: Gradient(stops: [
-                                Gradient.Stop(color: Color.white.opacity(1.0), location: 0.0),
-                                Gradient.Stop(color: Color.white.opacity(0.0), location: 1.0)
-                            ]),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                    )
-                    .mask(
-                        Text(viewModel.temperature)
-                            .font(.system(size: 100))
-                            .bold()
-                    )
-                
+                    .foregroundStyle(LinearGradient(
+                        gradient: Gradient(stops: [
+                            Gradient.Stop(color: Color.white.opacity(1.0), location: 0.0),
+                            Gradient.Stop(color: Color.white.opacity(0.0), location: 1.0)
+                        ]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ))
                 Text(viewModel.description)
                     .font(.title)
-                    .padding()
                     .foregroundColor(.white)
                 
                 Text(formatDate())
                     .foregroundColor(.white)
-                    .padding()
-                
+                HStack {
+                    Text(viewModel.humidity)
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                    Text(viewModel.wind)
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                }
+                .padding()
                 TextField("Enter City", text: $viewModel.city)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
@@ -132,5 +128,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    HomeView()
 }

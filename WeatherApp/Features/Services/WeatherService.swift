@@ -70,7 +70,7 @@ class WeatherService {
     
     // MARK: - Climate conditions with Location Key
     func fetchWeather(for locationKey: String, completion: @escaping (Weather?) -> Void) {
-        let urlString = "https://dataservice.accuweather.com/currentconditions/v1/\(locationKey)?apikey=\(apiKey)"
+        let urlString = "https://dataservice.accuweather.com/currentconditions/v1/\(locationKey)?apikey=\(apiKey)&details=true"
         
         guard let url = URL(string: urlString) else {
             completion(nil)
@@ -99,13 +99,28 @@ class WeatherService {
                    let temperatureInfo = weatherData["Temperature"] as? [String: Any],
                    let metric = temperatureInfo["Metric"] as? [String: Any],
                    let temp = metric["Value"] as? Double,
+                   let humidity = weatherData["RelativeHumidity"] as? Double,
+                   let wind = weatherData["Wind"] as? [String: Any],
+                   let windSpeed = wind["Speed"] as? [String: Any],
+                   let windSpeedMetric = windSpeed["Metric"] as? [String: Any],
+                   let windValue = windSpeedMetric["Value"] as? Double,
                    let weatherText = weatherData["WeatherText"] as? String {
-                    let weather = Weather(city: "Cidade desconhecida", temperature: String(format: "%.1f", temp), description: weatherText)
+                    
+                    let weather = Weather(
+                        city: "Cidade desconhecida",
+                        temperature: String(format: "%.1f", temp),
+                        description: weatherText,
+                        humidity: String(format: "%.1f", humidity),
+                        wind: String(format: "%.1f", windValue)
+                    )
+                    
                     completion(weather)
+                    
                 } else {
                     print("Erro: Dados de clima não encontrados ou inválidos.")
                     completion(nil)
                 }
+
             } catch {
                 print("Erro ao decodificar JSON: \(error)")
                 completion(nil)

@@ -11,6 +11,8 @@ class WeatherViewModel: ObservableObject {
     @Published var city: String = ""
     @Published var temperature: String = "--"
     @Published var description: String = "--"
+    @Published var humidity: String = ""
+    @Published var wind: String = ""
     
     private let weatherService = WeatherService()
     
@@ -29,6 +31,9 @@ class WeatherViewModel: ObservableObject {
                     self?.city = city
                     self?.temperature = "\(weather.temperature)ºC"
                     self?.description = weather.description.capitalized
+                    self?.humidity = "\(weather.humidity)%"
+                    self?.wind = "\(weather.wind) km/h"
+                    
                 }
             }
         }
