@@ -7,7 +7,13 @@ struct ContentView: View {
     
     @State private var animateLocation = false
     @State private var animateSearch = false
-
+    
+    func formatDate() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d, YYYY"
+        return formatter.string(from: Date())
+    }
+    
     var body: some View {
         VStack {
             HStack {
@@ -25,6 +31,13 @@ struct ContentView: View {
                             }
                         }
                     }
+                
+                Spacer()
+                
+                Text(viewModel.city)
+                    .font(.title)
+                    .padding()
+                    .foregroundColor(.white)
                 
                 Spacer()
                 
@@ -46,27 +59,39 @@ struct ContentView: View {
             .padding()
             Spacer()
             VStack {
-                Text(viewModel.city)
-                    .font(.largeTitle)
-                    .bold()
-                    .padding()
-                    .foregroundColor(.white)
-
                 Text(viewModel.temperature)
-                    .font(.system(size: 60))
+                    .font(.system(size: 100))
                     .bold()
                     .padding()
-                    .foregroundColor(.white)
-
+                    .overlay(
+                        LinearGradient(
+                            gradient: Gradient(stops: [
+                                Gradient.Stop(color: Color.white.opacity(1.0), location: 0.0),
+                                Gradient.Stop(color: Color.white.opacity(0.0), location: 1.0)
+                            ]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .mask(
+                        Text(viewModel.temperature)
+                            .font(.system(size: 100))
+                            .bold()
+                    )
+                
                 Text(viewModel.description)
                     .font(.title)
                     .padding()
                     .foregroundColor(.white)
-
+                
+                Text(formatDate())
+                    .foregroundColor(.white)
+                    .padding()
+                
                 TextField("Enter City", text: $viewModel.city)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
-
+                
                 Button(action: {
                     viewModel.fetchWeather(for: viewModel.city)
                 }) {
@@ -82,7 +107,7 @@ struct ContentView: View {
             }
             .padding()
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-           
+            
             .onAppear {
                 withAnimation(Animation.linear(duration: 7.0).repeatForever(autoreverses: true)) {
                     startPoint = UnitPoint(x: 1, y: 0)
