@@ -69,7 +69,7 @@ struct HomeView: View {
                         startPoint: .top,
                         endPoint: .bottom
                     ))
-                Text(viewModel.description)
+                Text(viewModel.weatherDescription)
                     .font(.title)
                     .foregroundColor(.white)
                 
@@ -109,6 +109,7 @@ struct HomeView: View {
                     startPoint = UnitPoint(x: 1, y: 0)
                     endPoint = UnitPoint(x: 0, y: 1)
                 }
+                viewModel.requestLocationPermission()
             }
         }
         .background(

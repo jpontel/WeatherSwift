@@ -27,8 +27,10 @@ class LocationManager {
     }
     
     func requestPermission() {
-        self.locationManager.requestLocation()
+        locationManager.requestWhenInUseAuthorization() // Solicita permissão enquanto o app estiver em uso
+        locationManager.startUpdatingLocation() // Começa a obter a localização
     }
+
     
     func requestLocation() {
         self.locationManager.requestLocation()
